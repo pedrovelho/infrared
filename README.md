@@ -1,13 +1,16 @@
 
-# Infrared Raspbian Guide
+# Infrared Raspberry Pi Guide
+
+Disclaimer this guide is from summer (about august) 2019. My gear is a Raspberry Pi 2 model B, 1GB, revision a01041 (Sony, UK).
+As operating system I installed retropie and then LXDE, currently a Raspbian GNU/Linux 9 (stretch).
 
 
-## The Circuite
+## Circuite
 
 Short range version.
 
 
-## The Software
+## Software
 
 First big challange, most documentation I have found was using lirc-rpi kernel module. After
 a lot of try and error I know that kernel module lirc-rpi is no longer supported. 
@@ -18,15 +21,15 @@ the setup part, and should be ignored. If you are still skeptical refer to the l
 
 [LibreELEC  infrared](https://wiki.libreelec.tv/infrared_remotes).
 
-LibreELEC is the reference, because kernel (sometimes refered as firmware) works
-a lot like the retropie kernel.
+LibreELEC documentation is very throughful, eventhough this is not the exact same distribution it uses
+the same kernel.
 
 [Raspberry pi kernel(firmware) documentation](https://github.com/raspberrypi/firmware/blob/master/boot/overlays/README)
 
 
 So with that out of the way let us start by adding to the /boot/config.txt the needed information to
 load the kernel modules at boot. I mapped the IR reader to GPIO18 and the IR LED to GPIO17, you
-might change this if needed.
+might change this if you use other pins on the Pi.
 
 ```
 # this will enable to receive IR signals
@@ -92,13 +95,16 @@ to the IR receiver and inside the linux kernel code. Isn't it awesome!? You can 
 from a simple controller using `ir-ctl -rFILENAME -d /dev/lirc1 -1 -P` you can check the options 
 using `man ir-ctl` but basically `-rFILENAME` says to store the output on a file named FILENAME, `-1` stands for
 one shot (that is it receives one set of input and then fnishes), `-P` is to avoid printing the timeout
-on the end of the file, the last is just comestic so we don't get a warning message from the
+on the end of the file which is just comestic so we don't get a warning message from the
 ir-ctl send command. Now that you have working command try to send it using `ir-ctl --send FILENAME` where you
-need to change FILENAME for the correct file.
+need to change FILENAME for with correct file.
 
 ```
 ir-ctl --send FILENAME
 ```
+
+
+
 
 
 
