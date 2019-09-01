@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# Usage, $ cat rawdatafile | ./plot-ir-spectrum.py
+
 import sys
 
 timeStamp=0
@@ -18,7 +20,10 @@ for line in sys.stdin:
         print(timeStamp, ' 0')
 
 
-#echo "set xlabel 'time'" >> temp.gnuplot
-#echo "set ylabel 'state'" >> temp.gnuplot
-#echo "plot './temp.dat' using 2:1 with lp" >> temp.gnuplot
-#gnuplot temp.gnuplot --persist
+
+#set yrange [0:50000]
+#set xrange [-0.1:1.1]
+#plot '/tmp/tmp.dat' w lp 2
+
+
+#system('gnuplot /tmp.gp')
