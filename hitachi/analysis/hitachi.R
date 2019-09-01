@@ -1,4 +1,5 @@
-aircode <- read.table('/Users/pvelho/Downloads/infrared/hitachi/hitachi.data', header = TRUE, sep='', colClasses=rep(c('character'), times=17))
+print(getwd())
+aircode <- read.table('./Downloads/infrared/hitachi/data/hitachi.data', header = TRUE, sep='', colClasses=rep(c('character'), times=17))
 
 aircode$temp <- sapply(aircode$temp, as.numeric)
 aircode$nbits <- sapply(aircode$nbits, as.numeric)
