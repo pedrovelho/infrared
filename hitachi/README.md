@@ -153,37 +153,79 @@ Total of 224 bits or 28 bytes.
 ### First CHUNK
 
 * Byte 1-7      : fixed  x01 x10 x30 x40 xBF x01 xFE
-* Byte 8        : ??? changed when switch mode to fan 
+
+* Byte 8        : 
+    * 00010010 (18) when the power or mode buttons are pressed
+    * 00010001 (17) otherwise
+
 * Byte 9        : fixed x12
-* Byte 10       : ???? changed with mode in long sequences
-* Byte 11       : ???? changed with mode in long sequences
-* Byte 12    : temperature value * 2 (or shifted left 1 bit), for instance:
+
+* Byte 10       : changed with button pressed
+    * power     : 0000 0011 3
+    * mode      : 0000 0111 7
+    * temp_up   : 0000 1000 8
+    * temp_down : 0000 1001 9
+    * fan       : 0000 1100 12
+    * vswing    : 0000 1101 13
+    * hswing    : 0000 1100 14
+    * powerful  : 0001 0101 21
+    * eco       : 0001 1000 24
+    * silent    : 0001 1100 28
+    * info      : left on last state
+
+* Byte 11       : Mode selection
+    * sample 2 : 00000011  (3) => heat
+    * sample 3 : 00000101  (5) => dry
+    * sample 4 : 00000100  (4) => cool
+    * sample 5 : 00001100 (12) => fan
+    * sample 6 : 00000010  (2) => auto
+
+* Byte 12    : temperature value * 2 (?left shifted), for instance:
     * sample 1  : 00100000 => 32 / 2 = 16 Celsius
     * sample 11 : 00101010 => 42 / 2 = 21 Celsius
     * sample 12 : 00101100 => 44 / 2 = 22 Celsius 
     * sample 13 : 00101110 => 46 / 2 = 23 Celsius
+
 * Byte 13    : fixed x00
+
 * Byte 14    : fan speed
     * 1 : 1 bar on the remote
     * 2 : 2 bars on the remote
     * 3 : 3 bars on the remote
     * 4 : 4 bars on the remote
     * 5 : auto fan on the remote
+
 * Byte 15    : 00001010 (6) => stop vswing, 0001011 (7) activate vswing 
+
 * Byte 16    : 00001010 (6) => stop hswing, 0001011 (7) activate hswing
+
 * Byte 17    : fixed x00
+
 * Byte 18    : 10000000 (128) => if power on, 0 otherwise
+
 * Byte 19-25 : fixed x00 x00 x00 x00 x00 x80 x01 
+
 * Byte 26    : where:
-    * samples 21-31 : 00000010 (2)  => eco mode on, 0 otherwise
-    * sample  32    : 00100000 (32) => powerful on, 0 otherwise
+    * samples 21-31 : 00000010 (2)  => eco mode on
+    * sample  32    : 00100000 (32) => powerful on
+    * 0 otherwise
+
 * Byte 27    : 0001000 (8)  => silent   on, 0 otherwise
+
 * Byte 28    : modular sum of 2 complement's of 1-27 bytes added with 
     2 complement's of 01000010 (62)
 
 ### Second CHUNK
 
-* ...
+* Bytes 29 - 33 : fixed x01 x10 x30 x40 xBF
+* Bytes 34 - 39 : fixed x10 xFE x22 x06 x13 x08
+* Byte 40 : 
+    * 00011100 (28) power,
+    * 00011101 (29) power off
+* Byte 41 : 
+    * 
+* Byte 42 :
+* Byte 43 :
 * Byte 44 : modular sum of 2 complement's of bytes 29-43 added with 
     2 complement's of 01000010 (62)
 
