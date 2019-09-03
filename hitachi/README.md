@@ -148,12 +148,43 @@ SPACE 1700
 
 Total of 224 bits or 28 bytes.
 
+## Bytes meaning
 
+### First CHUNK
 
+* Byte 1-7      : fixed  x01 x10 x30 x40 xBF x01 xFE
+* Byte 8        : ??? changed when switch mode to fan 
+* Byte 9        : fixed x12
+* Byte 10       : ???? changed with mode in long sequences
+* Byte 11       : ???? changed with mode in long sequences
+* Byte 12    : temperature value * 2 (or shifted left 1 bit), for instance:
+    * sample 1  : 00100000 => 32 / 2 = 16 Celsius
+    * sample 11 : 00101010 => 42 / 2 = 21 Celsius
+    * sample 12 : 00101100 => 44 / 2 = 22 Celsius 
+    * sample 13 : 00101110 => 46 / 2 = 23 Celsius
+* Byte 13    : fixed x00
+* Byte 14    : fan speed
+    * 1 : 1 bar on the remote
+    * 2 : 2 bars on the remote
+    * 3 : 3 bars on the remote
+    * 4 : 4 bars on the remote
+    * 5 : auto fan on the remote
+* Byte 15    : 00001010 (6) => stop vswing, 0001011 (7) activate vswing 
+* Byte 16    : 00001010 (6) => stop hswing, 0001011 (7) activate hswing
+* Byte 17    : fixed x00
+* Byte 18    : 10000000 (128) => if power on, 0 otherwise
+* Byte 19-25 : fixed x00 x00 x00 x00 x00 x80 x01 
+* Byte 26    : where:
+    * samples 21-31 : 00000010 (2)  => eco mode on, 0 otherwise
+    * sample  32    : 00100000 (32) => powerful on, 0 otherwise
+* Byte 27    : 0001000 (8)  => silent   on, 0 otherwise
+* Byte 28    : modular sum of 2 complement's of 1-27 bytes added with 
+    2 complement's of 01000010 (62)
 
+### Second CHUNK
 
-
-
-
+* ...
+* Byte 44 : modular sum of 2 complement's of bytes 29-43 added with 
+    2 complement's of 01000010 (62)
 
 
