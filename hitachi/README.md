@@ -5,7 +5,6 @@ This is the reverse engeneering of my rar-6n1 Hitachi remote control. Air-condit
 has 2 indoor units and a single outdoor unit.
 
 
-
 ## Signal shape
 
 Every sequence starts by a pulse of 30000us. The sequence might containe 1 or 2 chuncks
@@ -100,7 +99,9 @@ We can identify 3 types os sequences, first a
 
 ### Long sequence (44 bytes in 2 chunks, 28 bytes first chunk + 16 bytes second chunk)
 
-This sequence is trigered when pressing either the mode button or power button.
+This sequence is trigered when pressing either the mode, power, or sleep buttons.
+The second chunk is the time and date so that the remote and indoor unit synchronize during
+time related operations.
 
 ```
 PULSE 30000
@@ -148,17 +149,17 @@ SPACE 1700
 
 Total of 224 bits or 28 bytes.
 
-## Bytes meaning
+## Bytes meaning of regular and long sequences
 
 ### First CHUNK
 
 * Byte 1-7      : fixed  x01 x10 x30 x40 xBF x01 xFE
 
 * Byte 8        : 
-    * 00010010 (18) when the power or mode buttons are pressed
+    * 00010010 (18) when it is a long sequence, 2 chunks and 44 bytes
     * 00010001 (17) otherwise
 
-* Byte 9        : fixed x12
+* Byte 9        : fixed x12 (18)
 
 * Byte 10       : changed with button pressed
     * power     : 0000 0011 3
@@ -168,10 +169,12 @@ Total of 224 bits or 28 bytes.
     * fan       : 0000 1100 12
     * vswing    : 0000 1101 13
     * hswing    : 0000 1100 14
+    * sleep     : 0001 0001 17
+    * leavehome : 0001 0010 18
     * powerful  : 0001 0101 21
     * eco       : 0001 1000 24
     * silent    : 0001 1100 28
-    * info      : left on last state
+    * clean     : 0010 0001 33
 
 * Byte 11       : Mode selection
     * sample 2 : 00000011  (3) => heat
@@ -203,29 +206,41 @@ Total of 224 bits or 28 bytes.
 
 * Byte 18    : 10000000 (128) => if power on, 0 otherwise
 
-* Byte 19-25 : fixed x00 x00 x00 x00 x00 x80 x01 
+* Byte 19-20 : minutes before turn-off when on sleep mode, 
+            read (byte20 byte19) as a single 2 byte number
+            where byte 19 is the less significant
+  * sample 42 : 0011 1100 (60)  x003C : 1 hour 
+  * sample 43 : 1001 1000 (120) x0078 : 2 hours
+  * sample 44 : 1011 0100 (180) x00B4 : 3 hours
+  * sample 45 : 1010 0100 (420) x01A4 : 7 hours
+  * sample 46 : 0000 0000 (0)   x0000 : off
+
+
+* Bytes 21-25 : fixed x00 x00 x00 x80 x01 
 
 * Byte 26    : where:
     * samples 21-31 : 00000010 (2)  => eco mode on
     * sample  32    : 00100000 (32) => powerful on
     * 0 otherwise
 
-* Byte 27    : 0001000 (8)  => silent   on, 0 otherwise
+* Byte 27    : 0001000 (8)  => silent on, 0 otherwise
 
 * Byte 28    : modular sum of 2 complement's of 1-27 bytes added with 
     2 complement's of 01000010 (62)
 
 ### Second CHUNK
 
-* Bytes 29 - 33 : fixed x01 x10 x30 x40 xBF
-* Bytes 34 - 39 : fixed x10 xFE x22 x06 x13 x08
-* Byte 40 : 
-    * 00011100 (28) power,
-    * 00011101 (29) power off
-* Byte 41 : 
-    * 
-* Byte 42 :
-* Byte 43 :
+I believe this is for sync date and time. So each mode, sleep or power command 
+the indoor unit syncs time with the remote.
+
+* Bytes 29 - 35 : fixed x01 x10 x30 x40 xBF 0x10 0xEF
+* Bytes 36 - 37 : fixed x22 x06
+* Byte 38 : year, in 2 decimal digits (19 for 2019) x13
+* Byte 39 : month, examples: 08 is august, 09 is september
+* Byte 40 : day of month
+* Byte 41 : hour
+* Byte 42 : minutes
+* Byte 43 : day of week [1-7] meaning [monday - sunday]
 * Byte 44 : modular sum of 2 complement's of bytes 29-43 added with 
     2 complement's of 01000010 (62)
 

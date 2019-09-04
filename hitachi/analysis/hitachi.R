@@ -1,5 +1,5 @@
 print(getwd())
-aircode <- read.table('./Downloads/infrared/hitachi/data/hitachi.data', header = TRUE, sep='', colClasses=rep(c('character'), times=17))
+aircode <- read.table('/ddrive/infrared/hitachi/data/hitachi.data', header = TRUE, sep='', colClasses=rep(c('character'), times=17))
 
 aircode$temp <- sapply(aircode$temp, as.numeric)
 aircode$nbits <- sapply(aircode$nbits, as.numeric)
@@ -272,7 +272,7 @@ checkSum(c("00010010", "00000011"))
 
 # Check parity of 37 first samples, considering only the first sequence, 
 # bytes 1-28
-for(i in names(bita[,1:37])){
+for(i in names(bita[,1:49])){
   nega <- checkSum(as.character(bita[1:27,i]))
   target <- as.character(bita[28,i])
   print(c(i,":", nega, bin2dec(nega), target, bin2dec(target), bin2dec(target)-bin2dec(nega)), sep=" ")
@@ -280,16 +280,16 @@ for(i in names(bita[,1:37])){
 
 # Check parity of samples 1-6 and 36, considering only the second sequence
 # bytes 29-44
-for(i in names(bita[,c(1:6,36)])){
+for(i in names(bita[,c(1:7,37:48)])){
   nega <- checkSum(as.character(bita[29:43,i]))
   target <- as.character(bita[44,i])
   print(c(i,":", nega, bin2dec(nega), target, bin2dec(target), bin2dec(target)-bin2dec(nega)), sep=" ")
 }
 
-# Check parity of sample 38, info button with only 21 bytes
+# Check parity of sample 50, info button with only 21 bytes
 # bytes 1-22
-nega <- checkSum(as.character(bita[1:20,38]))
-target <- as.character(bita[21,38])
+nega <- checkSum(as.character(bita[1:20,50]))
+target <- as.character(bita[21,50])
 print(c(38,":", nega, bin2dec(nega), target, bin2dec(target), bin2dec(target)-bin2dec(nega)), sep=" ")
 
 # All samples match !!!!!!!!!
