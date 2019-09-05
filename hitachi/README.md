@@ -209,16 +209,17 @@ Total of 224 bits or 28 bytes.
 * Byte 19-20 : minutes before turn-off when on sleep mode, 
             read (byte20 byte19) as a single 2 byte number
             where byte 19 is the less significant
-  * sample 42 : 0011 1100 (60)  x003C : 1 hour 
-  * sample 43 : 1001 1000 (120) x0078 : 2 hours
-  * sample 44 : 1011 0100 (180) x00B4 : 3 hours
-  * sample 45 : 1010 0100 (420) x01A4 : 7 hours
-  * sample 46 : 0000 0000 (0)   x0000 : off
+  * sample 42 : 0000 0000 0011 1100 (60)  x003C : 1 hour 
+  * sample 43 : 0000 0000 1001 1000 (120) x0078 : 2 hours
+  * sample 44 : 0000 0000 1011 0100 (180) x00B4 : 3 hours
+  * sample 45 : 0000 0001 1010 0100 (420) x01A4 : 7 hours
+  * sample 47 : 0000 0001 0000 0000 (256) x0100 : 256 minutes for leavehome
+  * sample 46 : 0000 0000 0000 0000 (0)   x0000 : off
 
 
-* Bytes 21-25 : fixed x00 x00 x00 x80 x01 
+* Bytes 21-25 : fixed x00 x00 x00 x80 x01 (might be the time calendar)
 
-* Byte 26    : where:
+* Byte 26    : where: 
     * samples 21-31 : 00000010 (2)  => eco mode on
     * sample  32    : 00100000 (32) => powerful on
     * 0 otherwise
@@ -230,8 +231,8 @@ Total of 224 bits or 28 bytes.
 
 ### Second CHUNK
 
-I believe this is for sync date and time. So each mode, sleep or power command 
-the indoor unit syncs time with the remote.
+I believe this is for sync date and time. So after each mode, sleep or power command 
+the indoor unit syncs with the remote.
 
 * Bytes 29 - 35 : fixed x01 x10 x30 x40 xBF 0x10 0xEF
 * Bytes 36 - 37 : fixed x22 x06

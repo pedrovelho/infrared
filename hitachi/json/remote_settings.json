@@ -1,0 +1,9 @@
+{
+  "power" : "off",
+  "button_pressed" : 0,
+  "button_list" : ["power", "mode", "temp_up", "temp_down", "fan", "vswing", "hswing", "sleep", "leavehome", "powerful", "eco", "silent", "clean"],
+  "button_code" : [      3,      7,         8,           9,    12,       13,       14,      17,          18,         21,    24,       28,      33],
+  "mode_list" : ["d"],
+  "mode" : 1,
+  "temperature" : 22,
+}
