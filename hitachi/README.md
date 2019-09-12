@@ -16,11 +16,20 @@ PULSE 3400
 SPACE 1700
 ```
 
+So the signal would look like this:
 
-Following data is decoded using short pulses of around 420us in the service manual.
-My tests indicate that best is recognize any pulse shorter than 1000us as separators. 
-After each separator pulse we can have either a 1200us space (binary '1') or a short space 
-less than 1000us (binary '0'). See below an example with real raw data.
+```
+SPACE 50000
+PULSE 3400
+SPACE 1700
+CHUNK OF BITS #1 
+PULSE 3400
+SPACE 1700
+CHUNK OF BITS #2
+```
+
+On the chunk of bits data is decoded using short pulses of around 420us as separators. This nominal value come from the service manual, however my tests indicate that the best is to recognize any pulse shorter than 1000us as separators. 
+After each separator pulse we can have either a 1200us space (binary '1') or a short space typically around 500us, however my tests show the best is to test for anything less than 1000us (binary '0'). See below an example with real raw data.
 
 
 ```
@@ -36,9 +45,7 @@ space 453   => BINARY 0
 ```
 
 
-As you can see the timing is approximative, my decoding python program has a tolerance
-of 18% of the nominal value when comparing. For short pulses or spaces it uses a regular
-less then comparison.
+As you can see the timing is approximative, my decoding python program has a tolerance of 18% of the nominal value when comparing. For short pulses or spaces it uses a regular less then comparison.
 
 
 
@@ -94,14 +101,12 @@ for line in sys.stdin:
 
 ```
 
-
-We can identify 3 types os sequences, first a 
+Following the amount of bits and single or double bit chunks depend on the button pressed. We can identify 3 types os sequences detailed next.
 
 ### Long sequence (44 bytes in 2 chunks, 28 bytes first chunk + 16 bytes second chunk)
 
 This sequence is trigered when pressing either the mode, power, or sleep buttons.
-The second chunk is the time and date so that the remote and indoor unit synchronize during
-time related operations.
+The second chunk is the time and date so that the remote and indoor unit synchronize during time related operations.
 
 ```
 PULSE 30000
