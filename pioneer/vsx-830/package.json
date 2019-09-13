@@ -1,0 +1,17 @@
+{
+  "name": "vsx-rest-server",
+  "version": "0.0.1",
+  "description": "An api server for controlling a Daikin Air Conditioner via RasPi + IR",
+  "main": "index.js",
+  "repository": "empty for now",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pedro Velho",
+  "license": "ISC",
+  "dependencies": {
+    "core-util-is": "^1.0.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.3"
+  }
+}
