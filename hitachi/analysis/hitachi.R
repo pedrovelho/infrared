@@ -1,5 +1,5 @@
 print(getwd())
-aircode <- read.table('/ddrive/infrared/hitachi/data/hitachi.data', header = TRUE, sep='', colClasses=rep(c('character'), times=17))
+aircode <- read.table('~/Downloads/infrared/hitachi/data/hitachi.data', header = TRUE, sep='', colClasses=rep(c('character'), times=17))
 
 aircode$temp <- sapply(aircode$temp, as.numeric)
 aircode$nbits <- sapply(aircode$nbits, as.numeric)
@@ -291,6 +291,11 @@ for(i in names(bita[,c(1:7,37:48)])){
 nega <- checkSum(as.character(bita[1:20,50]))
 target <- as.character(bita[21,50])
 print(c(38,":", nega, bin2dec(nega), target, bin2dec(target), bin2dec(target)-bin2dec(nega)), sep=" ")
+
+
+substr((aircode[1:7,]$bitstring), 225, 352)
+
+substr((aircode[37:48,]$bitstring), 225, 352)
 
 # All samples match !!!!!!!!!
 # TODO samples with:

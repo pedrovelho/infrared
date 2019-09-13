@@ -1,9 +1,14 @@
 #!/usr/bin/python3
 from datetime import datetime, date
 
-def getByteStream(time):
-    byteStream = [0x01, 0x10, 0x30, 0x40, 0xbf, 0x10, 0xef, 0x22, 0x06, # Fixed
-                0x38, 0x39, 0x40, 0x41, 0x42, 0x43, 0x44 ] # date
+# Get the byte array that carries a datetime sync with hitachi AC
+def getDateByteStream(time):
+    byteStream = [
+                0x01, 0x10, 0x30, 0x40, 0xbf, 0x10, 0xef, # Fixed
+                0x22, 0x06, # Fixed
+                0x38, 0x39, 0x40, 0x41, 0x42, 0x43, # date and time
+                0x44 # parity byte
+    ]
     byteStream[9] = time.year - 2000
     byteStream[10] = time.month
     byteStream[11] = time.day
@@ -13,28 +18,32 @@ def getByteStream(time):
     byteStream[15] = parity(byteStream)
     return byteStream
 
+# Get a numeric representation in decimal of the 2 complement's of a given x
 def twoComplement(x):
-    if x == 128 :
-        return x
-    elif x >= 0 and x < 128 :
+    if 0 <= x < 128 :
         return -1*x
-    elif x >= 128 and x < 256 :
+    elif x == 128 : # 2 complement's of 128 is itself
+        return x
+    elif 128 < x < 256 :
         return -1*(x - 256)
     else :
-        print("fail x out of range")
+        print("Failed because x was out of range!!!")
         return(0)
 
+# The parity function, sum of 2 complement's of n-1 bytes, and then add 62
+# Decode the bitString in a single unsigned int in interval [0,255]
 def parity(byteStream):
     sum = 0
     for i in range(0, len(byteStream)-1, 1):
         sum += twoComplement(byteStream[i])
-    sum += 62
+    sum += 62 # 0011 1110
     if sum < 0:
         return 256 + sum
     else:
         return sum
 
-# less significant bit first, so 1 is 10000000, 81 is 10001010
+# Convert unsigned int in [0,255] in a bit string with
+# less significant bit first, i.e. 1 is 10000000, 81 is 10001010
 def dec2binLSB(x):
     bitString = ''
     for i in range(0, 8, 1):
@@ -42,13 +51,14 @@ def dec2binLSB(x):
         x = x//2
     return bitString
 
-def genBitStream(curDate):
-    st = getByteStream(curDate)
+# Based on a date get the bit string that represents it with parity bit and
+# fixed bytes.
+def genDateBitStream(curDate):
+    st = getDateByteStream(curDate)
     answer = ''
     for i in range(0, len(st), 1):
         answer += dec2binLSB(st[i])
     return answer
-
 
 
 timeTable = [
@@ -81,7 +91,6 @@ expected = [
 "10000000000010000000110000000010111111010000100011110111010001000110000011001000000100000011100010101000111000001100000010000001",
 "10000000000010000000110000000010111111010000100011110111010001000110000011001000000100000011100010101000101100001100000011011110",
 "10000000000010000000110000000010111111010000100011110111010001000110000011001000000100000011100010101000000010001100000000011110",
-
 "10000000000010000000110000000010111111010000100011110111010001000110000011001000000100001011100010100000001000000010000001001001",
 "10000000000010000000110000000010111111010000100011110111010001000110000011001000100100001100000010100000111110000100000001001001",
 "10000000000010000000110000000010111111010000100011110111010001000110000011001000100100001100000010100000010110000100000011101001",
@@ -99,7 +108,7 @@ expected = [
 for i in range(0, len(timeTable)):
     print("===================================")
     print("Running test case # ", i)
-    result = genBitStream(timeTable[i])
+    result = genDateBitStream(timeTable[i])
     if result == expected[i] :
         print('SUCCESS! strings match!')
     else :
@@ -108,4 +117,4 @@ for i in range(0, len(timeTable)):
         print('EXPECTED ',expected)
 
 
-print('STRING FOR NOW IS ', genBitStream(datetime.now()))
+print('STRING FOR NOW IS ', genDateBitStream(datetime.now()))
